@@ -25,9 +25,8 @@ export const DoctorCard = ({
   experience, 
   availability, 
   image, 
-  fee,
-  onBook,
-}: DoctorCardProps & { onBook?: () => void }) => {
+  fee 
+}: DoctorCardProps) => {
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 border-border/50 hover:border-primary/20 bg-gradient-to-br from-card to-card/50">
       <CardHeader className="pb-4">
@@ -86,7 +85,7 @@ export const DoctorCard = ({
             <Button variant="outline" size="sm">
               View Profile
             </Button>
-            <Button variant="medical" size="sm" onClick={onBook}>
+            <Button variant="medical" size="sm">
               Book Now
             </Button>
           </div>

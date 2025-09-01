@@ -32,7 +32,6 @@ export const Header = () => {
           <div className="hidden md:flex items-center space-x-3">
             <Button variant="ghost" size="sm">Sign In</Button>
             <Button variant="hero" size="sm">Get Started</Button>
-            <SupabaseConnectDialog />
           </div>
 
           {/* Mobile Menu Button */}
@@ -55,7 +54,6 @@ export const Header = () => {
               <div className="flex flex-col space-y-2 pt-4">
                 <Button variant="ghost" size="sm">Sign In</Button>
                 <Button variant="hero" size="sm">Get Started</Button>
-                <SupabaseConnectDialog />
               </div>
             </nav>
           </div>
