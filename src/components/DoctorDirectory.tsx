@@ -68,6 +68,46 @@ const sampleDoctors = [
 ];
 
 export const DoctorDirectory = () => {
+  const [query, setQuery] = useState("");
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const [selected, setSelected] = useState<any>(null);
+
+  const fetchProviders = async () => {
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+      return sampleDoctors;
+    }
+    const { data, error } = await supabase
+      .from("providers")
+      .select("id, name, specialty, location, rating, reviews, experience_years, availability_text, fee_kes")
+      .order("rating", { ascending: false })
+      .limit(30);
+    if (error) {
+      toast({ title: "Could not load providers", description: error.message, variant: "destructive" });
+      return sampleDoctors;
+    }
+    return (data || []).map((p) => ({
+      name: p.name,
+      specialty: p.specialty || "General Practitioner",
+      location: p.location || "Kenya",
+      rating: Number(p.rating ?? 4.5),
+      reviews: Number(p.reviews ?? 0),
+      experience: `${p.experience_years ?? 5} years`,
+      availability: p.availability_text || "Available",
+      fee: p.fee_kes ? `KSh ${p.fee_kes.toLocaleString()}` : "KSh 2,500",
+      id: p.id,
+    }));
+  };
+
+  const { data: doctors = [], isLoading } = useQuery({
+    queryKey: ["providers", query],
+    queryFn: fetchProviders,
+  });
+
+  const filtered = doctors.filter((d: any) =>
+    [d.name, d.specialty, d.location].join(" ").toLowerCase().includes(query.toLowerCase())
+  );
+
   return (
     <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
@@ -88,6 +128,8 @@ export const DoctorDirectory = () => {
               <Input 
                 placeholder="Search by name, specialty, or location..." 
                 className="pl-10"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
               />
             </div>
             
@@ -121,7 +163,7 @@ export const DoctorDirectory = () => {
 
           <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/50">
             <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-              <span>Showing {sampleDoctors.length} doctors</span>
+              <span>{isLoading ? "Loading..." : `Showing ${filtered.length} doctors`}</span>
               <Button variant="ghost" size="sm">
                 <Filter className="h-4 w-4 mr-2" />
                 More Filters
@@ -144,8 +186,8 @@ export const DoctorDirectory = () => {
 
         {/* Doctor Grid */}
         <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
-          {sampleDoctors.map((doctor, index) => (
-            <DoctorCard key={index} {...doctor} />
+          {filtered.map((doctor: any, index: number) => (
+            <DoctorCard key={index} {...doctor} onBook={() => { setSelected(doctor); setBookingOpen(true); }} />
           ))}
         </div>
 
@@ -155,6 +197,8 @@ export const DoctorDirectory = () => {
             Load More Doctors
           </Button>
         </div>
+
+        <BookingDialog open={bookingOpen} onOpenChange={setBookingOpen} doctor={selected} />
       </div>
     </section>
   );
