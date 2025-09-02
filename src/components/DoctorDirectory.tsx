@@ -1,73 +1,82 @@
+import { useState, useEffect } from "react";
 import { DoctorCard } from "./DoctorCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Filter } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
-const sampleDoctors = [
-  {
-    name: "Sarah Wanjiku",
-    specialty: "General Practitioner",
-    location: "Nairobi CBD",
-    rating: 4.8,
-    reviews: 124,
-    experience: "8 years",
-    availability: "Available Today",
-    fee: "KSh 2,500"
-  },
-  {
-    name: "James Ochieng",
-    specialty: "Cardiologist",
-    location: "Westlands, Nairobi",
-    rating: 4.9,
-    reviews: 89,
-    experience: "12 years",
-    availability: "Next Slot: Tomorrow",
-    fee: "KSh 5,000"
-  },
-  {
-    name: "Grace Akinyi",
-    specialty: "Pediatrician",
-    location: "Karen, Nairobi",
-    rating: 4.7,
-    reviews: 156,
-    experience: "6 years",
-    availability: "Available Today",
-    fee: "KSh 3,000"
-  },
-  {
-    name: "Michael Kiprop",
-    specialty: "Orthopedic Surgeon",
-    location: "Mombasa",
-    rating: 4.6,
-    reviews: 73,
-    experience: "15 years",
-    availability: "Next Slot: Monday",
-    fee: "KSh 6,500"
-  },
-  {
-    name: "Catherine Muthoni",
-    specialty: "Dermatologist",
-    location: "Kisumu",
-    rating: 4.8,
-    reviews: 91,
-    experience: "9 years",
-    availability: "Available Today",
-    fee: "KSh 4,000"
-  },
-  {
-    name: "David Wekesa",
-    specialty: "Neurologist",
-    location: "Nakuru",
-    rating: 4.9,
-    reviews: 67,
-    experience: "11 years",
-    availability: "Next Slot: Wednesday",
-    fee: "KSh 7,000"
-  }
-];
+interface Doctor {
+  id: string;
+  user_id: string;
+  license_number: string;
+  specialty: string;
+  experience_years: number;
+  consultation_fee: number;
+  bio: string | null;
+  location: string;
+  hospital_affiliation: string | null;
+  rating: number;
+  total_reviews: number;
+  is_verified: boolean;
+  is_available: boolean;
+  profiles: {
+    full_name: string | null;
+    avatar_url?: string | null;
+  } | null;
+}
 
 export const DoctorDirectory = () => {
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedSpecialty, setSelectedSpecialty] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const { toast } = useToast();
+
+  useEffect(() => {
+    fetchDoctors();
+  }, []);
+
+  const fetchDoctors = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("doctors")
+        .select(`
+          *,
+          profiles!inner(
+            full_name,
+            avatar_url
+          )
+        `)
+        .eq("is_verified", true)
+        .eq("is_available", true);
+
+      if (error) throw error;
+      setDoctors((data as unknown as Doctor[]) || []);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to load doctors",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredDoctors = doctors.filter((doctor) => {
+    const matchesSearch = 
+      doctor.profiles?.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      doctor.specialty.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      doctor.location.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesSpecialty = !selectedSpecialty || doctor.specialty === selectedSpecialty;
+    const matchesLocation = !selectedLocation || doctor.location.toLowerCase().includes(selectedLocation.toLowerCase());
+
+    return matchesSearch && matchesSpecialty && matchesLocation;
+  });
   return (
     <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
@@ -88,28 +97,32 @@ export const DoctorDirectory = () => {
               <Input 
                 placeholder="Search by name, specialty, or location..." 
                 className="pl-10"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             
-            <Select>
+            <Select value={selectedSpecialty} onValueChange={setSelectedSpecialty}>
               <SelectTrigger>
                 <SelectValue placeholder="Specialty" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="general">General Practitioner</SelectItem>
-                <SelectItem value="cardiology">Cardiologist</SelectItem>
-                <SelectItem value="pediatrics">Pediatrician</SelectItem>
-                <SelectItem value="orthopedics">Orthopedic Surgeon</SelectItem>
-                <SelectItem value="dermatology">Dermatologist</SelectItem>
-                <SelectItem value="neurology">Neurologist</SelectItem>
+                <SelectItem value="">All Specialties</SelectItem>
+                <SelectItem value="General Practitioner">General Practitioner</SelectItem>
+                <SelectItem value="Cardiologist">Cardiologist</SelectItem>
+                <SelectItem value="Pediatrician">Pediatrician</SelectItem>
+                <SelectItem value="Orthopedic Surgeon">Orthopedic Surgeon</SelectItem>
+                <SelectItem value="Dermatologist">Dermatologist</SelectItem>
+                <SelectItem value="Neurologist">Neurologist</SelectItem>
               </SelectContent>
             </Select>
 
-            <Select>
+            <Select value={selectedLocation} onValueChange={setSelectedLocation}>
               <SelectTrigger>
                 <SelectValue placeholder="Location" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="">All Locations</SelectItem>
                 <SelectItem value="nairobi">Nairobi</SelectItem>
                 <SelectItem value="mombasa">Mombasa</SelectItem>
                 <SelectItem value="kisumu">Kisumu</SelectItem>
@@ -121,7 +134,7 @@ export const DoctorDirectory = () => {
 
           <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/50">
             <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-              <span>Showing {sampleDoctors.length} doctors</span>
+              <span>Showing {filteredDoctors.length} doctors</span>
               <Button variant="ghost" size="sm">
                 <Filter className="h-4 w-4 mr-2" />
                 More Filters
@@ -144,9 +157,32 @@ export const DoctorDirectory = () => {
 
         {/* Doctor Grid */}
         <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
-          {sampleDoctors.map((doctor, index) => (
-            <DoctorCard key={index} {...doctor} />
-          ))}
+          {loading ? (
+            <div className="col-span-full text-center py-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+              <p className="text-muted-foreground mt-2">Loading doctors...</p>
+            </div>
+          ) : filteredDoctors.length > 0 ? (
+            filteredDoctors.map((doctor) => (
+              <DoctorCard 
+                key={doctor.id}
+                id={doctor.id}
+                name={doctor.profiles?.full_name || "Doctor"}
+                specialty={doctor.specialty}
+                location={doctor.location}
+                rating={doctor.rating}
+                reviews={doctor.total_reviews}
+                experience={`${doctor.experience_years} years`}
+                availability={doctor.is_available ? "Available Today" : "Not Available"}
+                image={doctor.profiles?.avatar_url}
+                fee={doctor.consultation_fee}
+              />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <p className="text-muted-foreground">No doctors found matching your criteria.</p>
+            </div>
+          )}
         </div>
 
         {/* Load More */}

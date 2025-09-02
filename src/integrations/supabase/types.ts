@@ -14,7 +14,215 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      appointments: {
+        Row: {
+          appointment_date: string
+          appointment_time: string
+          chief_complaint: string | null
+          consultation_type: string | null
+          created_at: string
+          doctor_id: string
+          duration_minutes: number | null
+          id: string
+          notes: string | null
+          patient_id: string
+          prescription: string | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          appointment_date: string
+          appointment_time: string
+          chief_complaint?: string | null
+          consultation_type?: string | null
+          created_at?: string
+          doctor_id: string
+          duration_minutes?: number | null
+          id?: string
+          notes?: string | null
+          patient_id: string
+          prescription?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          appointment_date?: string
+          appointment_time?: string
+          chief_complaint?: string | null
+          consultation_type?: string | null
+          created_at?: string
+          doctor_id?: string
+          duration_minutes?: number | null
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          prescription?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      doctor_reviews: {
+        Row: {
+          appointment_id: string | null
+          created_at: string
+          doctor_id: string
+          id: string
+          patient_id: string
+          rating: number
+          review_text: string | null
+        }
+        Insert: {
+          appointment_id?: string | null
+          created_at?: string
+          doctor_id: string
+          id?: string
+          patient_id: string
+          rating: number
+          review_text?: string | null
+        }
+        Update: {
+          appointment_id?: string | null
+          created_at?: string
+          doctor_id?: string
+          id?: string
+          patient_id?: string
+          rating?: number
+          review_text?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "doctor_reviews_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "doctor_reviews_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      doctors: {
+        Row: {
+          available_from: string | null
+          available_to: string | null
+          bio: string | null
+          certifications: string[] | null
+          consultation_fee: number
+          created_at: string
+          education: string | null
+          experience_years: number | null
+          hospital_affiliation: string | null
+          id: string
+          is_available: boolean | null
+          is_verified: boolean | null
+          license_number: string
+          location: string
+          rating: number | null
+          specialty: string
+          total_reviews: number | null
+          updated_at: string
+          user_id: string
+          working_days: number[] | null
+        }
+        Insert: {
+          available_from?: string | null
+          available_to?: string | null
+          bio?: string | null
+          certifications?: string[] | null
+          consultation_fee?: number
+          created_at?: string
+          education?: string | null
+          experience_years?: number | null
+          hospital_affiliation?: string | null
+          id?: string
+          is_available?: boolean | null
+          is_verified?: boolean | null
+          license_number: string
+          location: string
+          rating?: number | null
+          specialty: string
+          total_reviews?: number | null
+          updated_at?: string
+          user_id: string
+          working_days?: number[] | null
+        }
+        Update: {
+          available_from?: string | null
+          available_to?: string | null
+          bio?: string | null
+          certifications?: string[] | null
+          consultation_fee?: number
+          created_at?: string
+          education?: string | null
+          experience_years?: number | null
+          hospital_affiliation?: string | null
+          id?: string
+          is_available?: boolean | null
+          is_verified?: boolean | null
+          license_number?: string
+          location?: string
+          rating?: number | null
+          specialty?: string
+          total_reviews?: number | null
+          updated_at?: string
+          user_id?: string
+          working_days?: number[] | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          date_of_birth: string | null
+          email: string
+          full_name: string | null
+          gender: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          email: string
+          full_name?: string | null
+          gender?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          email?: string
+          full_name?: string | null
+          gender?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
