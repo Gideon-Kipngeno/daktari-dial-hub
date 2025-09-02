@@ -27,44 +27,162 @@ interface Doctor {
   } | null;
 }
 
+const sampleDoctors: Doctor[] = [
+  {
+    id: "1",
+    user_id: "1",
+    license_number: "KMP-001-2023",
+    specialty: "General Practitioner",
+    experience_years: 8,
+    consultation_fee: 2500,
+    bio: "Experienced general practitioner with a passion for primary healthcare.",
+    location: "Nairobi CBD",
+    hospital_affiliation: "Nairobi Hospital",
+    rating: 4.8,
+    total_reviews: 124,
+    is_verified: true,
+    is_available: true,
+    profiles: {
+      full_name: "Sarah Wanjiku",
+      avatar_url: null
+    }
+  },
+  {
+    id: "2",
+    user_id: "2",
+    license_number: "KMP-002-2023",
+    specialty: "Cardiologist",
+    experience_years: 12,
+    consultation_fee: 5000,
+    bio: "Specialist in cardiovascular diseases with extensive experience in interventional cardiology.",
+    location: "Westlands, Nairobi",
+    hospital_affiliation: "Aga Khan University Hospital",
+    rating: 4.9,
+    total_reviews: 89,
+    is_verified: true,
+    is_available: true,
+    profiles: {
+      full_name: "James Ochieng",
+      avatar_url: null
+    }
+  },
+  {
+    id: "3",
+    user_id: "3",
+    license_number: "KMP-003-2023",
+    specialty: "Pediatrician",
+    experience_years: 6,
+    consultation_fee: 3000,
+    bio: "Dedicated pediatrician committed to child health and development.",
+    location: "Karen, Nairobi",
+    hospital_affiliation: "MP Shah Hospital",
+    rating: 4.7,
+    total_reviews: 156,
+    is_verified: true,
+    is_available: true,
+    profiles: {
+      full_name: "Grace Akinyi",
+      avatar_url: null
+    }
+  },
+  {
+    id: "4",
+    user_id: "4",
+    license_number: "KMP-004-2023",
+    specialty: "Orthopedic Surgeon",
+    experience_years: 15,
+    consultation_fee: 6500,
+    bio: "Expert orthopedic surgeon specializing in joint replacement and sports medicine.",
+    location: "Mombasa",
+    hospital_affiliation: "Coast General Hospital",
+    rating: 4.6,
+    total_reviews: 73,
+    is_verified: true,
+    is_available: true,
+    profiles: {
+      full_name: "Michael Kiprop",
+      avatar_url: null
+    }
+  },
+  {
+    id: "5",
+    user_id: "5",
+    license_number: "KMP-005-2023",
+    specialty: "Dermatologist",
+    experience_years: 9,
+    consultation_fee: 4000,
+    bio: "Dermatologist with expertise in medical and cosmetic dermatology.",
+    location: "Kisumu",
+    hospital_affiliation: "Jaramogi Oginga Odinga Teaching and Referral Hospital",
+    rating: 4.8,
+    total_reviews: 91,
+    is_verified: true,
+    is_available: true,
+    profiles: {
+      full_name: "Catherine Muthoni",
+      avatar_url: null
+    }
+  },
+  {
+    id: "6",
+    user_id: "6",
+    license_number: "KMP-006-2023",
+    specialty: "Neurologist",
+    experience_years: 11,
+    consultation_fee: 7000,
+    bio: "Neurologist specializing in brain and nervous system disorders.",
+    location: "Nakuru",
+    hospital_affiliation: "Provincial General Hospital Nakuru",
+    rating: 4.9,
+    total_reviews: 67,
+    is_verified: true,
+    is_available: true,
+    profiles: {
+      full_name: "David Wekesa",
+      avatar_url: null
+    }
+  }
+];
+
 export const DoctorDirectory = () => {
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [doctors, setDoctors] = useState<Doctor[]>(sampleDoctors);
+  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSpecialty, setSelectedSpecialty] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
   const { toast } = useToast();
 
   useEffect(() => {
-    fetchDoctors();
+    // For now, just use sample data. In production, you'd fetch from Supabase
+    // fetchDoctors();
   }, []);
 
-  const fetchDoctors = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("doctors")
-        .select(`
-          *,
-          profiles!inner(
-            full_name,
-            avatar_url
-          )
-        `)
-        .eq("is_verified", true)
-        .eq("is_available", true);
+  // const fetchDoctors = async () => {
+  //   try {
+  //     const { data, error } = await supabase
+  //       .from("doctors")
+  //       .select(`
+  //         *,
+  //         profiles!inner(
+  //           full_name,
+  //           avatar_url
+  //         )
+  //       `)
+  //       .eq("is_verified", true)
+  //       .eq("is_available", true);
 
-      if (error) throw error;
-      setDoctors((data as unknown as Doctor[]) || []);
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: "Failed to load doctors",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     if (error) throw error;
+  //     setDoctors((data as unknown as Doctor[]) || []);
+  //   } catch (error: any) {
+  //     toast({
+  //       title: "Error",
+  //       description: "Failed to load doctors",
+  //       variant: "destructive",
+  //     });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const filteredDoctors = doctors.filter((doctor) => {
     const matchesSearch = 
