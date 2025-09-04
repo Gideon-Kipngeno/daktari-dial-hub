@@ -1,13 +1,10 @@
-import { useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Star, MapPin, Clock, DollarSign, Calendar } from "lucide-react";
-import { BookingDialog } from "./BookingDialog";
+import { Star, MapPin, Clock, Calendar } from "lucide-react";
 
 interface DoctorCardProps {
-  id: string;
   name: string;
   specialty: string;
   location: string;
@@ -16,11 +13,10 @@ interface DoctorCardProps {
   experience: string;
   availability: string;
   image?: string;
-  fee: number;
+  fee: string;
 }
 
 export const DoctorCard = ({ 
-  id,
   name, 
   specialty, 
   location, 
@@ -31,7 +27,6 @@ export const DoctorCard = ({
   image, 
   fee 
 }: DoctorCardProps) => {
-  const [isBookingOpen, setIsBookingOpen] = useState(false);
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 border-border/50 hover:border-primary/20 bg-gradient-to-br from-card to-card/50">
       <CardHeader className="pb-4">
@@ -81,29 +76,21 @@ export const DoctorCard = ({
         </div>
         
         <div className="flex items-center justify-between pt-4 border-t border-border/50">
-          <div className="flex items-center text-sm text-muted-foreground">
-            <DollarSign className="h-4 w-4 mr-1" />
-            KSh {fee.toLocaleString()}
+          <div>
+            <span className="text-sm text-muted-foreground">Consultation Fee</span>
+            <div className="font-semibold text-lg text-primary">{fee}</div>
+          </div>
+          
+          <div className="flex space-x-2">
+            <Button variant="outline" size="sm">
+              View Profile
+            </Button>
+            <Button variant="medical" size="sm">
+              Book Now
+            </Button>
           </div>
         </div>
-
-        <div className="flex gap-2 pt-4">
-          <Button variant="outline" size="sm" className="flex-1">
-            View Profile
-          </Button>
-          <Button size="sm" className="flex-1" onClick={() => setIsBookingOpen(true)}>
-            Book Now
-          </Button>
-        </div>
       </CardContent>
-
-      <BookingDialog
-        isOpen={isBookingOpen}
-        onClose={() => setIsBookingOpen(false)}
-        doctorId={id}
-        doctorName={name}
-        consultationFee={fee}
-      />
     </Card>
   );
 };
