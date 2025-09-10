@@ -3,8 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star, MapPin, Clock, Calendar } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface DoctorCardProps {
+  id: string;
   name: string;
   specialty: string;
   location: string;
@@ -17,6 +19,7 @@ interface DoctorCardProps {
 }
 
 export const DoctorCard = ({ 
+  id,
   name, 
   specialty, 
   location, 
@@ -27,6 +30,8 @@ export const DoctorCard = ({
   image, 
   fee 
 }: DoctorCardProps) => {
+  const navigate = useNavigate();
+
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 border-border/50 hover:border-primary/20 bg-gradient-to-br from-card to-card/50">
       <CardHeader className="pb-4">
@@ -85,7 +90,11 @@ export const DoctorCard = ({
             <Button variant="outline" size="sm">
               View Profile
             </Button>
-            <Button variant="medical" size="sm">
+            <Button 
+              variant="medical" 
+              size="sm"
+              onClick={() => navigate(`/book/${id}`)}
+            >
               Book Now
             </Button>
           </div>
