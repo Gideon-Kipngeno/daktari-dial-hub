@@ -38,7 +38,7 @@ export const DoctorDirectory = () => {
         .from('doctors')
         .select(`
           *,
-          profiles:user_id (
+          profiles!inner (
             full_name,
             avatar_url
           )
@@ -67,7 +67,7 @@ export const DoctorDirectory = () => {
     return matchesSearch && matchesSpecialty && matchesLocation;
   });
   return (
-    <section className="py-20 bg-background">
+    <section id="doctors" className="py-20 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">

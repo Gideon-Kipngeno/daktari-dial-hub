@@ -28,10 +28,10 @@ export const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#" className="text-foreground hover:text-primary transition-colors">Find Doctors</a>
-            <a href="#" className="text-foreground hover:text-primary transition-colors">Book Appointment</a>
-            <a href="#" className="text-foreground hover:text-primary transition-colors">Medical Records</a>
-            <a href="#" className="text-foreground hover:text-primary transition-colors">About</a>
+            <a href="/#doctors" className="text-foreground hover:text-primary transition-colors">Find Doctors</a>
+            <a href="/" className="text-foreground hover:text-primary transition-colors">Book Appointment</a>
+            <a href="/#records" className="text-foreground hover:text-primary transition-colors">Medical Records</a>
+            <a href="/#about" className="text-foreground hover:text-primary transition-colors">About</a>
           </nav>
 
           {/* Desktop Buttons */}
@@ -85,10 +85,10 @@ export const Header = () => {
         {isMenuOpen && (
           <div className="md:hidden mt-4 pt-4 border-t border-border">
             <nav className="flex flex-col space-y-3">
-              <a href="#" className="text-foreground hover:text-primary transition-colors py-2">Find Doctors</a>
-              <a href="#" className="text-foreground hover:text-primary transition-colors py-2">Book Appointment</a>
-              <a href="#" className="text-foreground hover:text-primary transition-colors py-2">Medical Records</a>
-              <a href="#" className="text-foreground hover:text-primary transition-colors py-2">About</a>
+              <a href="/#doctors" className="text-foreground hover:text-primary transition-colors py-2">Find Doctors</a>
+              <a href="/" className="text-foreground hover:text-primary transition-colors py-2">Book Appointment</a>
+              <a href="/#records" className="text-foreground hover:text-primary transition-colors py-2">Medical Records</a>
+              <a href="/#about" className="text-foreground hover:text-primary transition-colors py-2">About</a>
               <div className="flex flex-col space-y-2 pt-4">
                 {user ? (
                   <>
