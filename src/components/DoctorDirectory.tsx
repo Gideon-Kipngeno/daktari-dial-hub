@@ -61,8 +61,8 @@ export const DoctorDirectory = () => {
       doctor.specialty.toLowerCase().includes(searchTerm.toLowerCase()) ||
       doctor.location.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesSpecialty = !specialtyFilter || doctor.specialty === specialtyFilter;
-    const matchesLocation = !locationFilter || doctor.location.toLowerCase().includes(locationFilter.toLowerCase());
+    const matchesSpecialty = !specialtyFilter || specialtyFilter === 'all' || doctor.specialty === specialtyFilter;
+    const matchesLocation = !locationFilter || locationFilter === 'all' || doctor.location.toLowerCase().includes(locationFilter.toLowerCase());
     
     return matchesSearch && matchesSpecialty && matchesLocation;
   });
@@ -96,7 +96,7 @@ export const DoctorDirectory = () => {
                 <SelectValue placeholder="Specialty" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Specialties</SelectItem>
+                <SelectItem value="all">All Specialties</SelectItem>
                 <SelectItem value="General Practitioner">General Practitioner</SelectItem>
                 <SelectItem value="Cardiologist">Cardiologist</SelectItem>
                 <SelectItem value="Pediatrician">Pediatrician</SelectItem>
@@ -111,7 +111,7 @@ export const DoctorDirectory = () => {
                 <SelectValue placeholder="Location" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Locations</SelectItem>
+                <SelectItem value="all">All Locations</SelectItem>
                 <SelectItem value="nairobi">Nairobi</SelectItem>
                 <SelectItem value="mombasa">Mombasa</SelectItem>
                 <SelectItem value="kisumu">Kisumu</SelectItem>
