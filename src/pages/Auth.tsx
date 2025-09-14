@@ -80,9 +80,12 @@ export default function Auth() {
       });
 
       if (error) {
+        const msg = error.message?.includes("Invalid login credentials")
+          ? "Invalid credentials. If you just signed up, please confirm your email first via the link we sent."
+          : error.message;
         toast({
           title: "Sign in failed",
-          description: error.message,
+          description: msg,
           variant: "destructive"
         });
       } else {
@@ -100,6 +103,26 @@ export default function Auth() {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    if (!email) {
+      toast({
+        title: "Enter your email",
+        description: "Please enter your email above, then click resend.",
+      });
+      return;
+    }
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email,
+      options: { emailRedirectTo: `${window.location.origin}/` }
+    });
+    if (error) {
+      toast({ title: 'Resend failed', description: error.message, variant: 'destructive' });
+    } else {
+      toast({ title: 'Email sent', description: 'Check your inbox for the confirmation link.' });
     }
   };
 
@@ -173,6 +196,12 @@ export default function Auth() {
                   >
                     {isLoading ? "Signing in..." : "Sign In"}
                   </Button>
+                  <p className="text-xs text-muted-foreground text-center mt-2">
+                    Not receiving the email?{' '}
+                    <button type="button" onClick={handleResendConfirmation} className="text-primary underline">
+                      Resend confirmation email
+                    </button>
+                  </p>
                 </form>
               </TabsContent>
               
