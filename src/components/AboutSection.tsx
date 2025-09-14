@@ -30,11 +30,11 @@ export const AboutSection = () => {
   ];
 
   return (
-    <section id="about" className="py-20 bg-background">
+    <div className="py-20 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-            About HealthConnect
+            About Daktari Dial Hub
           </h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
             We're revolutionizing healthcare in Kenya by connecting patients with trusted medical professionals 
@@ -96,6 +96,6 @@ export const AboutSection = () => {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
