@@ -38,7 +38,7 @@ export const DoctorDirectory = () => {
         .from('doctors')
         .select(`
           *,
-          profiles:user_id (
+          profiles!inner(
             full_name,
             avatar_url
           )
